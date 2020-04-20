@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<h1> Welcome to Update page</h1>
+<div class="row mx-2">
+{% for i in prod %}
+<form action='/productupdate/{{shop.id}}' method='POST'>{% csrf_token %}
+<div class="card mx-2 " style="width: 18rem;height:23rem;">
+  <img style="width:50px;height:50px;" src="/{{i.prod_img}}" class="card-img-top mx-5" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">{{i.prod_name}}</h5>
+    <div class="row mx-2">
+    <p class="my-2"style="color:red;">Rs.{{i.prod_price}}/-</p>
+    <input type="number" class="form-control" name="prod_price" id="prod_price" placeholder='{{i.prod_price}}'required >
+    <button type="Submit" class="btn btn-link">Update</button>
+    </div>
+
+    <p class="card-text my-2">{{i.prod_disc}}.</p>
+  </div>
+
+</form>
+<form action='deleteProd/{{i.id}}'>
+<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal">
+  Delete
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are yor sure to delete this product?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="Submit" class="btn btn-danger">Delete Product</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</form>
+</div>
+{% endfor %}
+</div>
+{% endblock body %}

@@ -9,5 +9,7 @@ urlpatterns = [
     path('createuser', views.createuser ,name='SignUp'),
     path('logout', views.logoutuser ,name='Logout'),
     path('shopview/<int:shopid>', views.Myshop ,name='Myshop'),
-    path('shopview/addprod/<int:shopid>', views.add_prod ,name='Add')    
+    path('shopview/addprod/<int:shopid>', views.add_prod ,name='Add'),
+    path('productupdate/<int:shopid>', views.product_update ,name='Update'),
+    path('productupdate/deleteProd/<int:prodid>', views.delete_prod ,name='delete') 
 ]

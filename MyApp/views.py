@@ -103,3 +103,24 @@ def add_prod(request,shopid):
 
     param={'shop':shopn}
     return render(request,'add_prod.html',param)
+
+
+
+def product_update(request,shopid):
+    prod=products.objects.filter(shop=shopid)
+    shopn=shop.objects.filter(id=shopid)[0]
+
+    if request.method=='POST':
+        return HttpResponse('Working')
+
+    param={'prod':prod,'shop':shopn}
+    return render(request,'product_update.html',param)
+
+def delete_prod(request,prodid):
+
+    a=products.objects.filter(id=prodid)
+    p=a[0].shop.id
+    print(p)
+    a.delete()
+    return redirect(f'/productupdate/{p}')
+    
