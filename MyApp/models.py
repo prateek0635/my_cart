@@ -2,22 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from phone_field import PhoneField
 # Create your models here. My Class model will be deleted
-class myclass(models.Model):
-    id=models.AutoField(primary_key=True)
-    titel=models.CharField(max_length=100)
-    data=models.DateField()
-    disc=models.CharField(max_length=1000)
-    pic=models.ImageField(upload_to="static/")
-    Grocery = 'Grocery'
-    Medical = 'Medical'
-    DailyE='DailyE'
-    CHOICES = [
-        (Grocery, 'Grocery'),
-        (Medical, 'Medical'),
-        (DailyE, 'DailyE')]
-    category = models.CharField(max_length=20,choices=CHOICES,default=Grocery,)
-
-
 class shop(models.Model):
     shop_id=models.CharField(max_length=20,default='',unique=True)
     shop_name=models.CharField(max_length=20)
@@ -42,13 +26,6 @@ class shop(models.Model):
         return self.shop_name
     
 
-
-class oredr(models.Model):
-    user=models.ForeignKey(User,on_delete=models.CASCADE)
-    prod_name=models.CharField(max_length=30) 
-    price=models.IntegerField(default='0')
-    quantity=models.CharField(max_length=10,default='')
-
 class products(models.Model):
     shop=models.ForeignKey(shop,on_delete=models.CASCADE)
     prod_name=models.CharField(max_length=20)
@@ -65,5 +42,47 @@ class products(models.Model):
     prod_img=models.ImageField(upload_to="static/")
 
     def __str__(self):
-        return self.prod_name
+        return self.prod_name + ' by ' + self.shop.shop_name
+    
+class cart(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    quantity=models.IntegerField()
+    products=models.ForeignKey(products,on_delete=models.CASCADE)
+    shop=models.ForeignKey(shop,on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.first_name
+
+
+    
+class order(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    shop=models.ForeignKey(shop,on_delete=models.CASCADE)
+    price=models.CharField(max_length=100)
+    items=models.CharField(max_length=200)
+    date=models.DateTimeField(auto_now_add=True)
+    address=models.CharField(max_length=200)
+    Pending = 'Pending'
+    Accepted = 'Accepted'
+    Dispatched='Dispatched'
+    Denied='Denied'
+    Delivered='Delivered'
+    COD='COD'
+    Online='Online'
+    CHOICES = [
+        (Pending, 'Pending'),
+        (Accepted, 'Accepted'),
+        (Dispatched, 'Dispatched'),
+        (Denied, 'Denied'),
+        (Delivered, 'Delivered')]
+    status = models.CharField(max_length=20,choices=CHOICES,default=Pending)
+    Mode=[
+        (COD,'COD'),
+        (Online,'Online')
+    ]
+    payment = models.CharField(max_length=20,choices=Mode,default=COD)
+
+    def __str__(self):
+        return self.user.username
+    
     

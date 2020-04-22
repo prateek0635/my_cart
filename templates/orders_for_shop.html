@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Orders
+{% endblock title %}
+
+
+{% block body %}
+
+{% for item in order reversed %}
+
+
+<div class="card mx-2 my-2">
+    <div class="row mx-2">
+        <h5>  Order ID : {{item.id}}</h5>
+    </div>
+    <div class="row mx-2">
+        <h5>  items : {{item.items}}</h5>
+        
+    </div>
+    <div class="row mx-2">
+        <h5>{{item.price}}</h5>
+        
+    </div>
+    <div class="row mx-2">
+        <h5>  Status : {{item.status}}</h5>
+        
+    </div>
+        <div class="row mx-2">
+        <h7>  Address : {{item.address}}</h57
+        <h7>  Address2 : {{item.address2}}</h7>
+        
+    </div>
+</div>
+
+
+{% endfor %}
+</div>
+{% endblock body %}

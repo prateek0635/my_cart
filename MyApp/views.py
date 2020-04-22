@@ -1,20 +1,19 @@
 from django.shortcuts import render,redirect
-from django.http import HttpResponse
+from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login,logout
 from django.contrib import messages
-from .models import myclass,shop,products
+from .models import shop,products,cart,order
+from django.contrib.auth.decorators import login_required
 # from .forms import *
 
 # Create your views here.
 def index(request):
-    data=shop.objects.all()
-    print(data)
+    data=shop.objects.all()    
     try:
         prams={'name':request.user.first_name,'data':data,'range':3}
     except:
         prams={'data':data,'range':range(1,3)}
-    
     return render(request,'index.html',prams)
 
 def loginuser(request):
@@ -69,11 +68,17 @@ def logoutuser(request):
 def Myshop(request,shopid):
     prod=products.objects.filter(shop=shopid)
     shopn=shop.objects.filter(id=shopid)[0]
-
+    con=0
     param={'prod':prod,'shop':shopn}
+    if not request.user.is_anonymous:
+        a=cart.objects.filter(user=request.user,shop=shopn)
+        param['cart']=a
+        for i in a:
+            con+=1
+        
+        param['count']=con
     if request.user==shopn.shop_user:
         param['owner']=True
-        print(param)
     return render(request,'shop.html',param)
 
 
@@ -81,7 +86,7 @@ def Myshop(request,shopid):
 
 def add_prod(request,shopid):
     shopn=shop.objects.filter(id=shopid)[0]
-    print(request.user,shopn)
+    # print(request.user,shopn)
     if request.user==shopn.shop_user:
         if request.method=='POST':
             prod_name=request.POST['Product_name']
@@ -89,8 +94,8 @@ def add_prod(request,shopid):
             prod_price=request.POST['prod_price']
             Img=request.FILES
             prod_img=Img.get("prod_img")
-            print(prod_img)
-            print(prod_name,prod_disc,prod_price,prod_disc,prod_img)
+            # print(prod_img)
+            # print(prod_name,prod_disc,prod_price,prod_disc,prod_img)
             add=products.objects.create(shop=shopn,prod_name=prod_name,prod_disc=prod_disc,
                 prod_price=prod_price,prod_img=prod_img)
             add.save()
@@ -107,20 +112,111 @@ def add_prod(request,shopid):
 
 
 def product_update(request,shopid):
-    prod=products.objects.filter(shop=shopid)
     shopn=shop.objects.filter(id=shopid)[0]
+    prod=products.objects.filter(shop=shopid)
+    if request.user==shopn.shop_user:
+        if request.method=='POST':
+            prod_price=request.POST['prod_price']
+            prod_up.prod_price=prod_price
+            prod_price.save()
+        param={'prod':prod,'shop':shopn}
+        return render(request,'product_update.html',param)
+    else:
+        messages.error(request, 'Login With Your Business Account')
+        return redirect('/login')
+    
+def update_price(request,prodid):
+    a=products.objects.filter(id=prodid)[0]
+    
+    if request.user==a.shop.shop_user:
+        if request.method=='POST':
+            prod_price=request.POST['prod_price']
+            a.prod_price=prod_price
+            a.save()
+        return redirect(f'/productupdate/{a.shop.id}')
+    else:
+        messages.error(request, 'Login With Your Business Account')
+        return redirect('/login')
 
-    if request.method=='POST':
-        return HttpResponse('Working')
-
-    param={'prod':prod,'shop':shopn}
-    return render(request,'product_update.html',param)
 
 def delete_prod(request,prodid):
 
     a=products.objects.filter(id=prodid)
-    p=a[0].shop.id
-    print(p)
-    a.delete()
-    return redirect(f'/productupdate/{p}')
     
+    if request.user==a[0].shop.shop_user:
+        p=a[0].shop.id
+        a.delete()
+        return redirect(f'/productupdate/{p}')
+    else:
+        messages.error(request, 'Login With Your Business Account')
+        return redirect('/login')
+@login_required(login_url='/login')
+def add_to_cart(request,prodid,cmd):
+    if cmd=='add':
+        a=products.objects.filter(id=prodid)[0]
+        shopn=a.shop
+        if request.method=="POST":
+            quantity=request.POST['quantity']
+        add=cart.objects.create(user=request.user,products=a,quantity=quantity,shop=shopn)
+        return redirect(f'/shopview/{a.shop.id}')
+    if cmd=='delete':
+        dele=cart.objects.filter(user=request.user,id=prodid)
+        shop=dele[0].shop.id
+        dele.delete()
+        messages.error(request, 'Product has been removed form cart succesfully')
+        return redirect(f'/shopview/{shop}')
+
+@login_required(login_url='/login')
+def order_cart(request,shopid):
+    shopn=shop.objects.filter(id=shopid)[0]
+    cart_chechkout=cart.objects.filter(user=request.user,shop=shopn)
+    total_price=0
+    for i in cart_chechkout:
+        total_price+=i.products.prod_price
+    int_hand_fee=round(total_price/100)
+    tax=0
+    total=total_price+tax+int_hand_fee
+    data=''
+    for item in cart_chechkout:
+        data= data + item.products.prod_name + ','+ str(item.products.prod_price) + ',' + str(item.products.id) + ';'
+    order_price=f'Total price:{total_price} InternetFee: {int_hand_fee} Tax : {tax} Final Price {total}'
+    if request.method=="POST":
+        full_name=request.POST['full_name']
+        mobile=request.POST['mobile']
+        address=request.POST['address']
+        address2=request.POST['address2']
+        city=request.POST['city']
+        state=request.POST['state']
+        zip=request.POST['zip']
+        address=f'{full_name} {mobile} {address} {address2} {city} {state} {zip} '
+        order_create=order.objects.create(user=request.user,shop=shopn,price=order_price,items=data,address=address,
+        payment='COD')
+        order_create.save()
+        dele=cart.objects.filter(user=request.user,shop=shopn)
+        for a in dele:
+            a.delete()
+        
+        messages.error(request, f'Order Placed SuccessFully, Order ID is {order_create.id}')
+        return redirect(f'/shopview/{shopn.id}')
+    
+    params={'checkout':cart_chechkout,'shop':shopn,'total_price':total_price,'int_hand_fee':int_hand_fee,
+    'tax':tax,'total':total}
+    return render(request,'order.html',params)
+@login_required(login_url='/login')
+def order_tracker(request):
+    track=order.objects.filter(user=request.user)
+    param={'order':track}
+    return render(request,'order_tracker.html',param)
+
+def orders_for_shop(request,shopid):
+    shopn=shop.objects.filter(id=shopid)[0]
+    if request.user==shopn.shop_user:
+        shopn=shop.objects.filter(id=shopid)[0]
+        track=order.objects.filter(shop=shopn)
+        param={'order':track}
+        return render(request,'orders_for_shop.html',param)
+    
+    else:
+        messages.error(request, 'Login With Your Business Account')
+        return redirect('/login')
+

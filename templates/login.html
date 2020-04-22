@@ -19,7 +19,9 @@ Login
 
 
 
-<h1 align='center'>Login Page</h1>
+<h1 align='center'>  Login Page</h1>
+
+
 
 <form align="center" method="POST",action='/login'>{% csrf_token %}
 
@@ -37,7 +39,7 @@ Login
     </div>
   </div>
 </div>
-<h8>If New User Create accoutn <a class="nav-link" href="/createuser">SignUp</a></h8>
+<h8>If New User Create account <a class="nav-link" href="/createuser">SignUp</a></h8>
 <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 {% endblock body %}
