@@ -26,10 +26,26 @@
         
     </div>
         <div class="row mx-2">
-        <h7>  Address : {{item.address}}</h57
-        <h7>  Address2 : {{item.address2}}</h7>
-        
+        <h7>  Address : {{item.address}}</h5>
+        <h7> Address2 : {{item.address2}}</h7>
+                
     </div>
+    <form action="/orders_update/{{item.id}}" method="POST">{% csrf_token %}
+    <div class="container">
+        <div class="row">
+    <label for="status">Status</label>
+      <select id="status"name='status' class="form-control">
+        <option selected>{{item.status}}</option>
+        <option>Accepted</option>
+        <option>Dispatched</option>
+        <option>Denied</option>
+        <option>Delivered</option>
+        <option>Pending</option>
+    </select>
+    <button type="submit" class="btn btn-light">Update</button>
+</div>
+    </form>
+</div>
 </div>
 
 

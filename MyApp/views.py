@@ -220,3 +220,14 @@ def orders_for_shop(request,shopid):
         messages.error(request, 'Login With Your Business Account')
         return redirect('/login')
 
+def order_update(request,orderid):
+    up=order.objects.filter(user=request.user,id=orderid)[0]
+    if request.user==up.shop.shop_user:
+        if request.method=="POST":
+            status=request.POST['status']
+            up.status=status
+            up.save()
+        return redirect(f'/orders/{up.shop.id}')
+    else:
+        messages.error(request, 'Login With Your Business Account')
+        return redirect('/login')
