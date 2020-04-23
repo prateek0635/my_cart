@@ -231,3 +231,17 @@ def order_update(request,orderid):
     else:
         messages.error(request, 'Login With Your Business Account')
         return redirect('/login')
+
+def search(request):
+    query=request.GET['search']
+    if len(query)==0:
+        data=shop.objects.none()
+    else:
+        data1=shop.objects.filter(shop_name__icontains=query)
+        data2=shop.objects.filter(shop_disc__icontains=query)
+        prod1=products.objects.filter(prod_name__icontains=query)
+        prod2=products.objects.filter(prod_disc__icontains=query)
+        prod=prod1.union(prod2)
+        data=data1.union(data2)
+    param={'data':data,'query':query,'prod':prod}
+    return render(request,'search.html',param)

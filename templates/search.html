@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Search
+{% endblock title %}
+
+{% block body %}
+
+    <h4 align='center'> Search Results for {{query}}</h4>
+    {% if data|length < 1 and prod|length < 1 %}
+
+
+    <p>Suggestions:</p>
+    <ul class="list-group">
+        <li class="list-group-item disabled" aria-disabled="true">Make sure that all words are spelled correctly.</li>
+        <li class="list-group-item">Try different keywords.</li>
+        <li class="list-group-item">Try more general keywords.</li>
+        <li class="list-group-item">Try fewer keywords.</li>
+    </ul>
+
+
+
+
+{% endif %}
+{% if data|length > 0 %}
+<h4> Search Results In Shop</h4>
+{% endif %}
+<div class="row">
+
+    {% for i in data|slice:"0:"  %}
+    <div class="card mb-3 mx-2 my-2" style="width:450px;">
+        <div class="row no-gutters">
+            <div class="col-md-4">
+                <img style="width:150px;height:150px;" src="/{{i.shop_pic}}" class="card-img" alt="...">
+            </div>
+
+
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title">{{i.shop_name}}</h5>
+                    {% if i.verified %}<a href="#" class="badge badge-success">Verified</a>{% endif %}
+                    <p class="card-text">{{i.shop_disc}}</p>
+                    <div class="row mx-2">
+                    </div>
+                    <p class="card-text"><small class="text-muted">Category:{{i.category}}{{i.shop_user}}</small></p>
+                    <form>
+                        <a href="/shopview/{{i.id}}"><button type="button" class="btn btn-dark">View</button></a>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% if prod|length > 0 %}
+<h4> Search Results In Products: </h4>
+{% endif %}
+
+
+<div class="row mx-2">
+    {% for i in prod %}
+    <div class="card mx-2 text-center" style="width: 18rem;height:20rem;">
+        <img style="width:200px;height:150px;" src="/{{i.prod_img}}" class="card-img-top mx-5" alt="...">
+        <div class="card-body">
+            <h5 class="card-title">{{i.prod_name}}</h5>
+            <p class="my-2" style="color:red;">Rs.{{i.prod_price}}/-</p>
+            <p class="card-text my-2">{{i.prod_disc}}.</p>
+            <div class='row'>
+                <a href="/{{i.prod_img}}" class="btn btn-primary mx-2">Watch</a>
+                <a href="/shopview/{{i.shop.id}}" class="btn btn-primary mx-2">Go To Shop</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+
+
+
+
+{% endblock body %}
