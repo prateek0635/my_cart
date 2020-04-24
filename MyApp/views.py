@@ -158,6 +158,7 @@ def add_to_cart(request,prodid,cmd):
         if request.method=="POST":
             quantity=request.POST['quantity']
         add=cart.objects.create(user=request.user,products=a,quantity=quantity,shop=shopn)
+        add.save()
         return redirect(f'/shopview/{a.shop.id}')
     if cmd=='delete':
         dele=cart.objects.filter(user=request.user,id=prodid)
@@ -236,6 +237,7 @@ def search(request):
     query=request.GET['search']
     if len(query)==0:
         data=shop.objects.none()
+        prod=products.objects.none()
     else:
         data1=shop.objects.filter(shop_name__icontains=query)
         data2=shop.objects.filter(shop_disc__icontains=query)

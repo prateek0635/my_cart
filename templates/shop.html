@@ -16,7 +16,7 @@
 {% if not request.user.is_anonymous %}
 <!-- Button trigger modal -->
 <button type="button" class="btn btn-primary mx-2" data-toggle="modal" data-target="#exampleModalLong">
-  Cart <span class="badge badge-light">{{count}}</span>
+  <i class="fas fa-shopping-cart"></i> <span class="badge badge-light">{{count}}</span>
 </button>
 
 <!-- Modal -->
@@ -57,7 +57,13 @@
   </div>
 </div>
 {% endif %}
-<h1 align="center">Welcome to {{shop.shop_name}} </h1>
+<h1 align="center"> </h1>
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-4">{{shop.shop_name}}</h1>
+    <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+  </div>
+</div>
 {% if owner %}
 <div class='row mx-2 my-2'>
   <a href='addprod/{{shop.id}}'>
