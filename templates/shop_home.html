@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Home
+{% endblock title %}
+
+{% block body %}
+
+<div class="row">
+{% for i in data|slice:"0:"  %}
+<div class="card mb-3 mx-2 my-2" style="width:450px;">
+  <div class="row no-gutters">
+    <div class="col-md-4">
+      <img style="width:150px;height:150px;"src="{{i.shop_pic}}" class="card-img" alt="...">
+    </div>
+    
+    
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{i.shop_name}}</h5>
+        {% if i.verified %}<a href="#" class="badge badge-success">Verified</a>{% endif %}
+        <p class="card-text">{{i.shop_disc}}</p>
+        <div class="row mx-2">
+        </div>
+        <p class="card-text"><small class="text-muted">Category:{{i.category}}{{i.shop_user}}</small></p>
+        <form>
+        <a href="/shopview/{{i.id}}"><button type="button" class="btn btn-dark">View</button></a>
+      </form>
+      </div>
+    
+    </div>
+  </div>
+</div>
+{% endfor %}
+</div>
+
+{% endblock body %}
+
+
+
+

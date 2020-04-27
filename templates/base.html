@@ -6,19 +6,45 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v3.8.6">
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/carousel/">
 
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
     integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <script src="https://kit.fontawesome.com/706f187bcb.js" crossorigin="anonymous"></script>
+    <meta name="msapplication-config" content="/docs/4.4/assets/img/favicons/browserconfig.xml">
+<meta name="theme-color" content="#563d7c">
+
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
   <title>{%block title%}
     {%endblock title%}</title>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <link href="carousel.css" rel="stylesheet">
 </head>
 
 <body>
+  <header>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="/">Locly</a>
+    <a class="navbar-brand" href="/"><b>LOCLY</b></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
       aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -27,6 +53,9 @@
       <ul class="navbar-nav">
         <li class="nav-item active">
           <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link mx-2" href="/shops">Shops</a>
         </li>
         {% if not request.user.is_anonymous %}
         <li class="nav-item">
@@ -39,8 +68,14 @@
         </li>
         {% endif %}
         {% if not request.user.is_anonymous %}
-        <button class="btn btn-danger mx-2" onclick="document.location = '/logout'">logout</button>
-        <button class="btn btn-info">{{request.user.first_name}}</button>
+        <li class="nav-item">
+          <a class="nav-link mx-2" ><i class="fas fa-user-circle"></i> {{request.user.first_name}}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link mx-2" href="/logout">Logout</a>
+        </li>
+        
+        
         
         {% endif %}
       </ul>
@@ -52,7 +87,7 @@
     </form>
     </div>
   </nav>
-
+</header>
   {% block body %}
   {% endblock body %}
 
@@ -71,5 +106,8 @@
   {% block js %}
   {% endblock js %}
 </body>
-
+<footer class="container">
+  <p class="float-right"><a href="#">Back to top</a></p>
+  <p>&copy; www.locly.in. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
+</footer>
 </html>

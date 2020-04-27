@@ -9,12 +9,14 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def index(request):
+    return render(request,'index.html')
+def index_shop(request):
     data=shop.objects.all()    
     try:
         prams={'name':request.user.first_name,'data':data,'range':3}
     except:
         prams={'data':data,'range':range(1,3)}
-    return render(request,'index.html',prams)
+    return render(request,'shop_home.html',prams)
 
 def loginuser(request):
     if request.method=='POST':

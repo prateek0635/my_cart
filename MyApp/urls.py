@@ -5,6 +5,7 @@ from MyApp import views
 
 urlpatterns = [
     path('', views.index ,name='Index'),
+    path('shops', views.index_shop ,name='IndexShop'),
     path('login', views.loginuser ,name='Login'),
     path('createuser', views.createuser ,name='SignUp'),
     path('logout', views.logoutuser ,name='Logout'),
