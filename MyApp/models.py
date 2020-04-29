@@ -86,3 +86,7 @@ class order(models.Model):
         return self.user.username
     
     
+class contact(models.Model):
+    email=models.CharField(max_length=30)
+    sub=models.CharField(max_length=30,blank=True)
+    msg=models.TextField(max_length=None)

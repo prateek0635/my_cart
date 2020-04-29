@@ -3,7 +3,7 @@ from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login,logout
 from django.contrib import messages
-from .models import shop,products,cart,order
+from .models import shop,products,cart,order,contact
 from django.contrib.auth.decorators import login_required
 # from .forms import *
 
@@ -249,3 +249,14 @@ def search(request):
         data=data1.union(data2)
     param={'data':data,'query':query,'prod':prod}
     return render(request,'search.html',param)
+
+def contact_us(request):
+    if request.method=='POST':
+        email=request.POST['email']
+        sub=request.POST['subject']
+        msg=request.POST['msg']
+        a=contact.objects.create(email=email,sub=sub,msg=msg)
+        a.save()
+        messages.success(request, 'Thanks for contacting us ! We will reach you soon')
+        return redirect('/contact')
+    return render(request,'contact_us.html')
