@@ -68,21 +68,26 @@
         </li>
         {% endif %}
         {% if not request.user.is_anonymous %}
-        <li class="nav-item">
-          <a class="nav-link mx-2" ><i class="fas fa-user-circle"></i> {{request.user.first_name}}</a>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fas fa-user-circle"></i> {{request.user.first_name}}
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="#">Welcome {{request.user.first_name}}</a>
+            <a class="dropdown-item" href="/logout">Logout</a>        
+          </div>
         </li>
-        <li class="nav-item">
-          <a class="nav-link mx-2" href="/logout">Logout</a>
-        </li>
-        
+
         
         
         {% endif %}
         <li class="nav-item">
           <a class="nav-link mx-2" href="contact">Contact <i class="fas fa-headset"></i></a>
         </li>
-      </ul>
-
+        <li class="nav-item">
+          <a class="nav-link mx-2" href="/blog/0">Blog </a>
+        </li>
+        
     </div>
     <form method="GET" action="/search" class="form-inline my-2 my-lg-0">
       <input class="form-control mr-sm-2" type="search" placeholder="Search" name='search'aria-label="Search">

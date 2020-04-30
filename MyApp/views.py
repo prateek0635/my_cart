@@ -3,7 +3,7 @@ from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login,logout
 from django.contrib import messages
-from .models import shop,products,cart,order,contact
+from .models import shop,products,cart,order,contact,myblog
 from django.contrib.auth.decorators import login_required
 # from .forms import *
 
@@ -260,3 +260,13 @@ def contact_us(request):
         messages.success(request, 'Thanks for contacting us ! We will reach you soon')
         return redirect('/contact')
     return render(request,'contact_us.html')
+
+def blog_home(request,id):
+    if id==0:
+        post=myblog.objects.all()
+        param={'blog':post}
+        return render(request,'blog_home.html',param)
+    else:
+        post=myblog.objects.filter(id=id)
+        param={'blog':post}
+        return render(request,'blog_full.html',param)

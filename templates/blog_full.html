@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Blog
+{% endblock title %}
+
+{% block body %}
+<div class="container">
+{% for i in blog %}
+<div class="blog-post">
+    <h1 style="text-align: center;"class="blog-post-title">{{i.title}}</h1>
+    <p class="blog-post-meta">{{i.date}}</p>
+    {{i.content |safe}}... <a href="/blog/{{i.id}}">continue reading</a>
+    
+  </div><!-- /.blog-post -->
+
+  
+
+
+
+
+
+
+
+
+
+
+{% endfor %}
+</div>
+{% endblock body %}

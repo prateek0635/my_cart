@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from phone_field import PhoneField
+from ckeditor_uploader.fields import RichTextUploadingField
+
 # Create your models here. My Class model will be deleted
 class shop(models.Model):
     shop_id=models.CharField(max_length=20,default='',unique=True)
@@ -90,3 +92,12 @@ class contact(models.Model):
     email=models.CharField(max_length=30)
     sub=models.CharField(max_length=30,blank=True)
     msg=models.TextField(max_length=None)
+
+class myblog(models.Model):
+    title=models.CharField(max_length=30)
+    date=models.DateTimeField(auto_now_add=True)
+    content=RichTextUploadingField()
+
+    def __str__(self):
+        return self.title
+    
