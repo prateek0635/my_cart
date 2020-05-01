@@ -8,12 +8,14 @@ class shop(models.Model):
     shop_id=models.CharField(max_length=20,default='',unique=True)
     shop_name=models.CharField(max_length=20)
     shop_user=models.ForeignKey(User,on_delete=models.CASCADE)
-    shop_pic=models.ImageField(upload_to="static/")
+    shop_pic=models.ImageField(upload_to="media/")
     shop_disc=models.CharField(max_length=100)
     shop_add=models.CharField(max_length=50)
     verified=models.BooleanField(default=False)
     contact=models.IntegerField(default='')
     delivery=models.BooleanField(default=False)
+    loclity=models.CharField(default='',max_length=50)
+    city=models.CharField(default='Bareilly',max_length=50)
     Grocery = 'Grocery'
     Medical = 'Medical'
     DailyE='DailyE'
@@ -41,7 +43,7 @@ class products(models.Model):
         (Medical, 'Medical'),
         (DailyE, 'DailyE')]
     category = models.CharField(max_length=20,choices=CHOICES,default=Grocery)
-    prod_img=models.ImageField(upload_to="static/")
+    prod_img=models.ImageField(upload_to="media/")
 
     def __str__(self):
         return self.prod_name + ' by ' + self.shop.shop_name
@@ -89,12 +91,12 @@ class order(models.Model):
     
     
 class contact(models.Model):
-    email=models.CharField(max_length=30)
-    sub=models.CharField(max_length=30,blank=True)
+    email=models.CharField(max_length=100)
+    sub=models.CharField(max_length=100,blank=True)
     msg=models.TextField(max_length=None)
 
 class myblog(models.Model):
-    title=models.CharField(max_length=30)
+    title=models.CharField(max_length=200)
     date=models.DateTimeField(auto_now_add=True)
     content=RichTextUploadingField()
 

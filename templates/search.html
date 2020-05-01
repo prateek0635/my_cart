@@ -30,7 +30,7 @@
     <div class="card mb-3 mx-2 my-2" style="width:450px;">
         <div class="row no-gutters">
             <div class="col-md-4">
-                <img style="width:150px;height:150px;" src="/{{i.shop_pic}}" class="card-img" alt="...">
+                <img style="width:150px;height:150px;" src="/media/{{i.shop_pic}}" class="card-img" alt="...">
             </div>
 
 
@@ -61,7 +61,7 @@
 <div class="row mx-2">
     {% for i in prod %}
     <div class="card mx-2 text-center" style="width: 18rem;height:20rem;">
-        <img style="width:200px;height:150px;" src="/{{i.prod_img}}" class="card-img-top mx-5" alt="...">
+        <img style="width:200px;height:150px;" src="/media/{{i.prod_img}}" class="card-img-top mx-5" alt="...">
         <div class="card-body">
             <h5 class="card-title">{{i.prod_name}}</h5>
             <p class="my-2" style="color:red;">Rs.{{i.prod_price}}/-</p>

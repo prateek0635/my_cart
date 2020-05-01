@@ -34,7 +34,7 @@
         {% for item in cart  %}
         <div class="card my-2">
           <div class="row">
-            <img style="width:50px;height:50px;" src="/{{item.products.prod_img}}" alt="..." class="rounded-circle">
+            <img style="width:50px;height:50px;" src="/media/{{item.products.prod_img}}" alt="..." class="rounded-circle">
             <div class="col">
               <h6 class="card-title mx-5"><b>{{item.products.prod_name}}</b></h6>
               <div class="row">
@@ -61,10 +61,10 @@
 <div class="jumbotron p-4 p-md-5 text-white rounded bg-dark my-2">
   <div class="container">
     <div class="row">
-      <img style="width:150px;height:150px;"src="/{{shop.shop_pic}}" alt="..." class="rounded">
+      <img style="width:150px;height:150px;"src="/media/{{shop.shop_pic}}" alt="..." class="rounded">
       <div class="col">
         <h1 class="display-4">{{shop.shop_name}}</h1>
-        <p class="lead">{{shop.shop_add}}</p>
+        <p class="lead"><i class="fas fa-map-marker-alt"></i> {{shop.shop_add}}</p>
         <a class="btn btn-outline-success" href="https://api.WhatsApp.com/send?phone={{shop.contact}}" role="button"><i class="fab fa-whatsapp"></i></a>
       </div>
     </div>
@@ -87,7 +87,7 @@
 <div class="row mx-2">
   {% for i in prod %}
   <div class="card mx-2 text-center" style="width: 18rem;height:20rem;">
-    <img style="width:200px;height:150px;" src="/{{i.prod_img}}" class="card-img-top mx-5" alt="...">
+    <img style="width:200px;height:150px;" src="/media/{{i.prod_img}}" class="card-img-top mx-5" alt="...">
     <div class="card-body">
       <h5 class="card-title">{{i.prod_name}}</h5>
       <p class="my-2" style="color:red;">Rs.{{i.prod_price}}/-</p>

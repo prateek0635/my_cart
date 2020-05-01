@@ -7,7 +7,7 @@
 {% for i in prod %}
 <form action='/updateprice/{{i.id}}' method='POST'>{% csrf_token %}
 <div class="card mx-2 " style="width: 18rem;height:23rem;">
-  <img style="width:50px;height:50px;" src="/{{i.prod_img}}" class="card-img-top mx-5" alt="...">
+  <img style="width:50px;height:50px;" src="/media/{{i.prod_img}}" class="card-img-top mx-5" alt="...">
   <div class="card-body">
     <h5 class="card-title">{{i.prod_name}}</h5>
     <div class="row mx-2">
