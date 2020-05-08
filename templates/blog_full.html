@@ -1,17 +1,16 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Blog
+{{blog.title}}
 {% endblock title %}
 
 {% block body %}
 <div class="container">
-{% for i in blog %}
+
 <div class="blog-post">
-    <h1 style="text-align: center;"class="blog-post-title">{{i.title}}</h1>
-    <p class="blog-post-meta">{{i.date}}</p>
-    {{i.content |safe}}... <a href="/blog/{{i.id}}">continue reading</a>
-    
+    <h1 style="text-align: center;"class="blog-post-title">{{blog.title}}</h1>
+    <p class="blog-post-meta">{{blog.date}}</p>
+    {{blog.content |safe}}    
   </div><!-- /.blog-post -->
 
   
@@ -25,6 +24,5 @@ Blog
 
 
 
-{% endfor %}
 </div>
 {% endblock body %}

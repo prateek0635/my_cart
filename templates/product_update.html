@@ -12,11 +12,16 @@
     <h5 class="card-title">{{i.prod_name}}</h5>
     <div class="row mx-2">
     <p class="my-2"style="color:red;">Rs.{{i.prod_price}}/-</p>
-    <input type="number" class="form-control" name="prod_price" id="prod_price" placeholder="{{i.prod_price}}"required >
+    <input type="text" class="form-control" name="prod_name" id="prod_name" placeholder="{{i.prod_name}}" 
+    value="{{i.prod_name}}">
+    <input type="number" class="form-control" name="prod_price" id="prod_price" placeholder="{{i.prod_price}}" 
+    value="{{i.prod_price}}">
+    <input type="text" class="form-control" name="prod_disc" id="prod_disc" placeholder="{{i.prod_disc}}" 
+    value="{{i.prod_disc}}">
     <button type="Submit" class="btn btn-link">Update</button>
     </div>
 
-    <p class="card-text my-2">{{i.prod_disc}}.</p>
+    
   </div>
 
 </form>

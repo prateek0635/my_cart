@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Home
+{% block title %}Shops
 {% endblock title %}
 
 {% block body %}
@@ -17,10 +17,14 @@
     <div class="col-md-8">
       <div class="card-body">
         <h5 class="card-title">{{i.shop_name}}</h5>
-        {% if i.verified %}<a href="#" class="badge badge-success">Verified</a>{% endif %}
+        <div class="row mx-2 my-1">
+        {% if i.verified %}<a href="#" class="badge badge-success mr-2">Verified</a>{% endif %}
+        {% if i.delivery %}<span class="badge badge-dark">Delivery</span>{% endif %}
+      
+      </div>
         <p class="card-text">{{i.shop_disc}}</p>
-        <div class="row mx-2">
-        </div>
+        
+        
         <h8><i class="fas fa-map-marker-alt my-1"></i> {{i.loclity}}</h8>
         <form>
         <a href="/shopview/{{i.id}}"><button type="button" class="btn btn-dark">View</button></a>

@@ -5,6 +5,11 @@ Order
 {% endblock titel %}
 {% block body %}
 <h1 align="center">Checkout from {{shop.shop_name}} </h1>
+{% if not shop.verified %}
+<div class="alert alert-primary" role="alert">
+  This shop is not verified with us. Locly.in will not be responsible for any thing. Purchase at your own risk
+</div>
+{% endif %}
 <div class="container">
 {% for item in checkout %}
 <div class="card my-2">

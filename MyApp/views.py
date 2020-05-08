@@ -117,10 +117,6 @@ def product_update(request,shopid):
     shopn=shop.objects.filter(id=shopid)[0]
     prod=products.objects.filter(shop=shopid)
     if request.user==shopn.shop_user:
-        if request.method=='POST':
-            prod_price=request.POST['prod_price']
-            prod_up.prod_price=prod_price
-            prod_price.save()
         param={'prod':prod,'shop':shopn}
         return render(request,'product_update.html',param)
     else:
@@ -132,8 +128,12 @@ def update_price(request,prodid):
     
     if request.user==a.shop.shop_user:
         if request.method=='POST':
+            prod_name=request.POST['prod_name']
             prod_price=request.POST['prod_price']
+            prod_disc=request.POST['prod_disc']
+            a.prod_name=prod_name
             a.prod_price=prod_price
+            a.prod_disc=prod_disc
             a.save()
         return redirect(f'/productupdate/{a.shop.id}')
     else:
@@ -267,6 +267,6 @@ def blog_home(request,id):
         param={'blog':post}
         return render(request,'blog_home.html',param)
     else:
-        post=myblog.objects.filter(id=id)
+        post=myblog.objects.filter(id=id)[0]
         param={'blog':post}
         return render(request,'blog_full.html',param)
