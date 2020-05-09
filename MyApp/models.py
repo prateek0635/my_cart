@@ -6,16 +6,18 @@ from ckeditor_uploader.fields import RichTextUploadingField
 # Create your models here. My Class model will be deleted
 class shop(models.Model):
     shop_id=models.CharField(max_length=20,default='',unique=True)
-    shop_name=models.CharField(max_length=20)
+    shop_name=models.CharField(max_length=100)
     shop_user=models.ForeignKey(User,on_delete=models.CASCADE)
     shop_pic=models.ImageField(upload_to="media/")
     shop_disc=models.CharField(max_length=100)
-    shop_add=models.CharField(max_length=50)
+    shop_add=models.CharField(max_length=100)
     verified=models.BooleanField(default=False)
     contact=models.IntegerField(default='')
     delivery=models.BooleanField(default=False)
     loclity=models.CharField(default='',max_length=50)
+    clicks=models.IntegerField(default=0)
     city=models.CharField(default='Bareilly',max_length=50)
+    rating=models.FloatField(default=5)
     Grocery = 'Grocery'
     Medical = 'Medical'
     DailyE='DailyE'
@@ -32,7 +34,7 @@ class shop(models.Model):
 
 class products(models.Model):
     shop=models.ForeignKey(shop,on_delete=models.CASCADE)
-    prod_name=models.CharField(max_length=20)
+    prod_name=models.CharField(max_length=100)
     prod_disc=models.CharField(max_length=100)
     prod_price=models.FloatField()
     Grocery = 'Grocery'
@@ -63,9 +65,9 @@ class order(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     shop=models.ForeignKey(shop,on_delete=models.CASCADE)
     price=models.CharField(max_length=100)
-    items=models.CharField(max_length=200)
+    items=models.CharField(max_length=2000)
     date=models.DateTimeField(auto_now_add=True)
-    address=models.CharField(max_length=200)
+    address=models.CharField(max_length=1000)
     Pending = 'Pending'
     Accepted = 'Accepted'
     Dispatched='Dispatched'
@@ -96,10 +98,15 @@ class contact(models.Model):
     msg=models.TextField(max_length=None)
 
 class myblog(models.Model):
-    title=models.CharField(max_length=200)
+    title=models.CharField(max_length=1000)
     date=models.DateTimeField(auto_now_add=True)
     content=RichTextUploadingField()
 
     def __str__(self):
         return self.title
+class rateing(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    shop=models.ForeignKey(shop,on_delete=models.CASCADE)
+    rate=models.IntegerField(choices= [(i,i) for i in range(1,6)])
+    review=models.TextField(blank=True)
     

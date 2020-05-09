@@ -18,63 +18,73 @@
 {% endif %}
 
 {% if not request.user.is_anonymous %}
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary mx-2" data-toggle="modal" data-target="#exampleModalLong">
-  <i class="fas fa-shopping-cart"></i> <span class="badge badge-light">{{count}}</span>
-</button>
+<div class="row">
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-primary mx-2 mt-1" data-toggle="modal" data-target="#exampleModalLong">
+    <i class="fas fa-shopping-cart"></i> <span class="badge badge-light">{{count}}</span>
+  </button>
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
-  aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Cart of {{shop.shop_name}} </h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-      {% if not shop.delivery %}
-      <p>Delivery Option is not available in this shop</p>
-      {% endif %}
-        {% for item in cart  %}
-        <div class="card my-2">
-          <div class="row">
-            <img style="width:50px;height:50px;" src="/media/{{item.products.prod_img}}" alt="..." class="rounded-circle">
-            <div class="col">
-              <h6 class="card-title mx-5"><b>{{item.products.prod_name}}</b></h6>
-              <div class="row">
-                <p class="my-2 mx-5" style="color:red;">Rs.{{item.products.prod_price}}/-</p>
-                <h8 class='mx-2'><b> Quantity:</b>{{item.quantity}}</h8>
-                <a href="/addtocart/{{item.id}}/delete/" class="btn btn-outline-danger">Remove</a>
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Cart of {{shop.shop_name}} </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+        
+          {% if not shop.delivery %}
+          <p>Delivery Option is not available in this shop</p>
+          {% endif %}
+          {% if cart|length < 1 and shop.delivery %}Cart is Empty{% endif %}
+          {% for item in cart  %}
+          <div class="card my-2">
+            <div class="row">
+              <img style="width:50px;height:50px;" src="/media/{{item.products.prod_img}}" alt="..."
+                class="rounded-circle">
+              <div class="col">
+                <h6 class="card-title mx-5"><b>{{item.products.prod_name}}</b></h6>
+                <div class="row">
+                  <p class="my-2 mx-5" style="color:red;">Rs.{{item.products.prod_price}}/-</p>
+                  <h8 class='mx-2'><b> Quantity:</b>{{item.quantity}}</h8>
+                  <a href="/addtocart/{{item.id}}/delete/" class="btn btn-outline-danger">Remove</a>
+                </div>
               </div>
             </div>
           </div>
+          {% endfor %}
         </div>
-        {% endfor %}
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <form action="/order/{{shop.id}}">
-        {% if shop.delivery %}
-          <button type="submit" class="btn btn-primary">Place Order</button>
-        {% endif %}
-        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <form action="/order/{{shop.id}}">
+            {% if shop.delivery %}
+            <button type="submit" class="btn btn-primary">Place Order</button>
+            {% endif %}
+          </form>
+        </div>
       </div>
     </div>
   </div>
-</div>
-{% endif %}
+  {% endif %}
 
+  <button type="button" class="btn btn-dark mt-1 "><i class="far fa-eye"></i> {{shop.clicks}}</button>
+</div>
 <div class="jumbotron p-4 p-md-5 text-white rounded bg-dark my-2">
   <div class="container">
     <div class="row">
-      <img style="width:150px;height:150px;"src="/media/{{shop.shop_pic}}" alt="..." class="rounded">
+      <img style="width:150px;height:150px;" src="/media/{{shop.shop_pic}}" alt="..." class="rounded">
       <div class="col">
+        <div class="row ml-1">
         <h1 class="display-4">{{shop.shop_name}}</h1>
+        <h4><a href="#" class="badge badge-{{rate_col}} ml-2"><i class="far fa-star"></i>{{rate__avg}}</a></h4>
+        </div>
         <p class="lead"><i class="fas fa-map-marker-alt"></i> {{shop.shop_add}}</p>
-        <a class="btn btn-outline-success" href="https://api.WhatsApp.com/send?phone={{shop.contact}}" role="button"><i class="fab fa-whatsapp"></i></a>
+        <a class="btn btn-outline-success" href="https://api.WhatsApp.com/send?phone={{shop.contact}}" role="button"><i
+            class="fab fa-whatsapp"></i></a>
       </div>
     </div>
   </div>
@@ -96,17 +106,40 @@
 <div class="row mx-2">
   {% for i in prod %}
   <div class="card mx-2 text-center" style="width: 18rem;height:20rem;">
-    <img style="width:200px;height:150px;" src="/media/{{i.prod_img}}" class="card-img-top mx-5" alt="...">
+  <a href="/{{i.prod_img}}">
+    <img style="width:200px;height:150px;" src="/media/{{i.prod_img}}" class="card-img-top mx-5" alt="..."></a>
     <div class="card-body">
       <h5 class="card-title">{{i.prod_name}}</h5>
-      <p class="my-2" style="color:red;">Rs.{{i.prod_price}}/-</p>
-      <p class="card-text my-2">{{i.prod_disc}}.</p>
-      <div class='row'>
-        <a href="/{{i.prod_img}}" class="btn btn-primary mx-2">Watch</a>
+      <p style="color:red;">Rs.{{i.prod_price}}/-</p>
+      
+      <a type="button" data-toggle="modal" data-target="#exampleModal">
+        Details
+      </a>
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-body">
+              <p class="card-text">{{i.prod_disc}}.</p> 
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class='row justify-content-md-center'>
         <form action="/addtocart/{{i.id}}/add/" method="POST">{% csrf_token %}
-          
           {% if shop.delivery %}
-          <input class="mx-2" type="number" value="1" id="quantity" name="quantity" min="1" max="10">
+          <select  id="quantity" name="quantity">
+            <option selected="selected" value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+          </select>
           <button class="btn btn-primary" type="submit">Add</button>
           {% endif %}
         </form>
@@ -115,4 +148,41 @@
   </div>
   {% endfor %}
 </div>
+<div class="container-fluid mt-4">
+  <h3>Reviews</h3>
+  {% if rate|length < 1 %}No Reviews yet{% endif %}
+
+  {% for data in rate|slice:":10" %}
+  {% if data.review|length > 0 %}
+  <div class="card my-1">
+    <div class='row ml-5 mb-2 mt-3'><i class="fas fa-user-circle fa-3x"></i>
+      <div class='col ml-1'>
+        <div class="row ml-1">
+          <b>{{data.user}}</b>
+          <span class="badge badge-pill badge-success ml-3"><i class="fas fa-star"></i>{{data.rate}}</span>
+        </div>
+        <p>{{data.review}}</p>
+      </div>
+
+    </div>
+  </div>
+  {% endif %}
+
+
+  {% endfor %}
+  {% if rate|length > 0 %}
+  <a type="button" href="/reviews/{{shop.id}}" class="btn btn-outline-info">Read All <i class="fas fa-arrow-right"></i></a>
+  {% endif %}
+  <h3>Write Review</h3>
+  <form action="/rate/{{shop.id}}" method="POST">{% csrf_token %}
+    <input type="range" name="rateinput" class="custom-range col-3 mr-2 mt-4" min="0" max="5" step="1" id="rateinput"
+      value='5' oninput="rateoutput.value = rateinput.value">
+    <span class="badge badge-success"><i class="fas fa-star"></i>
+      <output id="rateoutput" name="rateoutput" for="rangeInput"> 5</output></span>
+    <textarea class="form-control col-8 mt-2" type="text" name='review' placeholder="Write Review" maxlength="500"></textarea>
+    
+    <button type="submit" class="btn btn-secondary mt-2">Submit</button>
+  </form>
+</div>
+
 {% endblock body %}

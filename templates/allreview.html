@@ -1,0 +1,30 @@
+
+{% extends 'base.html' %}
+{% block title %}Reviews
+{% endblock title %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+    <h3>Reviews of {{shop.shop_name}}</h3>
+    {% if rate|length < 1 %}No Reviews yet{% endif %}
+
+    {% for data in rate %}
+    {% if data.review|length > 0 %}
+    <div class="card my-1"></div>
+    <div class='row ml-5 mb-2 mt-3'><i class="fas fa-user-circle fa-3x"></i>
+        <div class='col ml-1'>
+            <div class="row ml-1">
+                <b>{{data.user}}</b>
+                <span class="badge badge-pill badge-success ml-3"><i class="fas fa-star"></i>{{data.rate}}</span>
+            </div>
+            <p>{{data.review}}</p>
+        </div>
+
+    </div>
+</div>
+    {% endif %}
+
+
+    {% endfor %}
+</div>
+{% endblock body %}

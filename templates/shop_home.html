@@ -22,9 +22,13 @@
         {% if i.delivery %}<span class="badge badge-dark">Delivery</span>{% endif %}
       
       </div>
-        <p class="card-text">{{i.shop_disc}}</p>
-        
-        
+      {% if i.rating > 3.5 %}
+        <h5><a href="#" class="badge badge-success ml-2"><i class="far fa-star"></i>{{i.rating}}</a></h5>
+      {% elif i.rating > 2.5 %}
+        <h5><a href="#" class="badge badge-warning ml-2"><i class="far fa-star"></i>{{i.rating}}</a></h5>
+      {% elif i.rating > 0 %}
+        <h5><a href="#" class="badge badge-danger ml-2"><i class="far fa-star"></i>{{i.rating}}</a></h5>
+      {% endif %}
         <h8><i class="fas fa-map-marker-alt my-1"></i> {{i.loclity}}</h8>
         <form>
         <a href="/shopview/{{i.id}}"><button type="button" class="btn btn-dark">View</button></a>

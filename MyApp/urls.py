@@ -22,6 +22,8 @@ urlpatterns = [
     path('search/', views.search ,name='search'),
     path('contact/', views.contact_us ,name='contact'),
     path('blog/<int:id>', views.blog_home ,name='blog'),
+    path('rate/<int:id>', views.rate ,name='rate'),
+    path('reviews/<int:id>', views.all_review ,name='reviews'),
     # path('readblog/<int:id>', views.blog_home ,name='readBlog'),
     
 ]

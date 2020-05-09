@@ -3,15 +3,16 @@ from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login,logout
 from django.contrib import messages
-from .models import shop,products,cart,order,contact,myblog
+from .models import shop,products,cart,order,contact,myblog,rateing
 from django.contrib.auth.decorators import login_required
+from django.db.models import Avg,Count
 # from .forms import *
 
 # Create your views here.
 def index(request):
     return render(request,'index.html')
 def index_shop(request):
-    data=shop.objects.all()    
+    data=shop.objects.all()   
     try:
         prams={'name':request.user.first_name,'data':data,'range':3}
     except:
@@ -70,8 +71,23 @@ def logoutuser(request):
 def Myshop(request,shopid):
     prod=products.objects.filter(shop=shopid)
     shopn=shop.objects.filter(id=shopid)[0]
+    rate=rateing.objects.filter(shop=shopid)
+    avg=rateing.objects.filter(shop=shopid).aggregate(Avg('rate'))
+    shopn.clicks=shopn.clicks+1
+    shopn.save()
     con=0
-    param={'prod':prod,'shop':shopn}
+    param={'prod':prod,'shop':shopn,'rate':rate}
+    if avg['rate__avg'] is None:
+        avg['rate__avg']=5
+    shopn.rating=round(avg['rate__avg'],1)
+    shopn.save()
+    param['rate__avg']=round(avg['rate__avg'],1)
+    if param['rate__avg']>=3.5:
+        param['rate_col']='success'
+    elif  param['rate__avg']>=2.5:
+        param['rate_col']='warning'
+    else:
+        param['rate_col']='danger'
     if not request.user.is_anonymous:
         a=cart.objects.filter(user=request.user,shop=shopn)
         param['cart']=a
@@ -270,3 +286,18 @@ def blog_home(request,id):
         post=myblog.objects.filter(id=id)[0]
         param={'blog':post}
         return render(request,'blog_full.html',param)
+@login_required(login_url='/login')
+def rate(request,id):
+    shopn=shop.objects.filter(id=id)[0]
+    rate_obj=rateing.objects.filter(shop=id)
+    if request.method=='POST':
+        rating=request.POST['rateinput']
+        review=request.POST['review']
+        a=rateing.objects.create(user=request.user,shop=shopn,rate=rating,review=review)
+        a.save()
+    return redirect(f'/shopview/{id}')
+def all_review(request,id):
+    shopn=shop.objects.filter(id=id)[0]
+    rate_obj=rateing.objects.filter(shop=id)
+    param={'rate':rate_obj,'shop':shopn}
+    return render(request,'allreview.html',param)
