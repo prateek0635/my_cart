@@ -9,8 +9,8 @@ urlpatterns = [
     path('login', views.loginuser ,name='Login'),
     path('createuser', views.createuser ,name='SignUp'),
     path('logout', views.logoutuser ,name='Logout'),
-    path('shopview/<int:shopid>', views.Myshop ,name='Myshop'),
-    path('shopview/addprod/<int:shopid>', views.add_prod ,name='Add'),
+    path('shops/<str:shop_id>', views.Myshop ,name='Myshop'),
+    path('shops/addprod/<int:shopid>', views.add_prod ,name='Add'),
     path('productupdate/<int:shopid>', views.product_update ,name='Update'),
     path('productupdate/deleteProd/<int:prodid>', views.delete_prod ,name='delete'),
     path('updateprice/<int:prodid>', views.update_price ,name='Update_price'),
@@ -24,6 +24,8 @@ urlpatterns = [
     path('blog/<int:id>', views.blog_home ,name='blog'),
     path('rate/<int:id>', views.rate ,name='rate'),
     path('reviews/<int:id>', views.all_review ,name='reviews'),
+    path('full/<slug:slug>', views.fullprod ,name='fullprod'),
+    path('addcategory/<str:com>', views.addcategory ,name='addcategory'),
     # path('readblog/<int:id>', views.blog_home ,name='readBlog'),
     
 ]

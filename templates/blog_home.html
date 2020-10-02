@@ -1,10 +1,15 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Blog
+Blog-Locly.in Read how to take your business online
 {% endblock title %}
+{% block disc %}{% for i in blog|slice:":4" reversed %}
+{{i.title}}
 
+{% endfor %}
+{% endblock disc %}
 {% block body %}
+
 <div class="container">
 {% for i in blog reversed %}
 <div class="blog-post">

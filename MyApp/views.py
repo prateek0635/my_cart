@@ -3,7 +3,7 @@ from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login,logout
 from django.contrib import messages
-from .models import shop,products,cart,order,contact,myblog,rateing
+from .models import shop,products,cart,order,contact,myblog,rateing,category_prod
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg,Count
 # from .forms import *
@@ -68,15 +68,18 @@ def logoutuser(request):
     messages.error(request, 'LoggedOut')
     return redirect('/login')
 #This fucnction shows the products
-def Myshop(request,shopid):
+def Myshop(request,shop_id):
+    shop1=shop.objects.filter(shop_id=shop_id)[0]
+    shopid=shop1.id
     prod=products.objects.filter(shop=shopid)
     shopn=shop.objects.filter(id=shopid)[0]
     rate=rateing.objects.filter(shop=shopid)
     avg=rateing.objects.filter(shop=shopid).aggregate(Avg('rate'))
     shopn.clicks=shopn.clicks+1
     shopn.save()
+    category=category_prod.objects.filter(shop=shopn)
     con=0
-    param={'prod':prod,'shop':shopn,'rate':rate}
+    param={'prod':prod,'shop':shopn,'rate':rate,"category":category}
     if avg['rate__avg'] is None:
         avg['rate__avg']=5
     shopn.rating=round(avg['rate__avg'],1)
@@ -301,3 +304,23 @@ def all_review(request,id):
     rate_obj=rateing.objects.filter(shop=id)
     param={'rate':rate_obj,'shop':shopn}
     return render(request,'allreview.html',param)
+
+def fullprod(request,slug):
+    prod=products.objects.filter(slug=slug)[0]
+    shopid=prod.shop.id
+    shopn=shop.objects.filter(id=shopid)[0]
+    param={'prod':prod,'shop':shopn}
+    return render(request,'product.html',param)
+
+def addcategory(request,com):
+    if com=="add":
+        if request.method=='POST':
+            shop_id=request.POST['Shop_id']
+            shop1=shop.objects.filter(shop_id=shop_id)[0]
+            cat_name=request.POST['cat_name']
+            a=category_prod.objects.create(shop=shop1,name=cat_name)
+            a.save()
+            messages.success(request, f'Category {cat_name} added')
+    else:
+        pass
+    return redirect(f"/shops/{shop_id}")

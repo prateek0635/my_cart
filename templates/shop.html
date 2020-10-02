@@ -2,8 +2,11 @@
 
 
 {% block title %}
-{{shop.shop_name}}{{shop.shop_disc}}
+{{shop.shop_name}}| Locly.in 
 {% endblock title %}
+{% block disc %}
+{{shop.shop_disc}}
+{% endblock disc %}
 {% block body %}
 {% if messages %}
 {% for message in messages %}
@@ -16,7 +19,14 @@
 </div>
 {% endfor %}
 {% endif %}
-
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><a href="/shops">Shops</a></li>
+    <li class="breadcrumb-item"><a >{{shop.shop_name}}</a></li>
+    
+  </ol>
+</nav>
 {% if not request.user.is_anonymous %}
 <div class="row">
   <!-- Button trigger modal -->
@@ -97,6 +107,69 @@
   <form action="/productupdate/{{shop.id}}">
     <button type="submit" class="btn btn-secondary mx-2">GO to Update Page</button>
   </form>
+  <!-- Add category -->
+<button type="button" class="btn btn-primary mx-1" data-toggle="modal" data-target="#add_cat">
+  Add category
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="add_cat" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add category</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body"  >
+        <form method="POST" action="/addcategory/add">{% csrf_token %}
+          <label>Shop Id</label>
+          <input class="form-control form-control-lg" name="Shop_id" type="text" placeholder="{{shop.shop_id}}" value="{{shop.shop_id}}" readonly>
+          <label>Category Name</label>
+          <input class="form-control form-control-lg" name="cat_name" type="text" placeholder="" >
+          <button type="submit" class="btn btn-primary">Add</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Add cat end -->
+<!-- All Cat -->
+<button type="button" class="btn btn-primary mx-1" data-toggle="modal" data-target="#all_cat">
+  All Category
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="all_cat" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">All Category</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <ul class="list-group">
+          {% for cat in category %}
+          <div class="row">
+          <li class="list-group-item">{{cat.name}}</li>
+        </div>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end all cat -->
   <a href="/orders/{{shop.id}}" class="btn btn-outline-danger">Orders</a>
 </div>
 
@@ -105,11 +178,12 @@
 
 <div class="row mx-2">
   {% for i in prod %}
+  {% if not i.affiliate %}
   <div class="card mx-2 text-center" style="width: 18rem;height:20rem;">
-  <a href="/{{i.prod_img}}">
-    <img style="width:200px;height:150px;" src="/media/{{i.prod_img}}" class="card-img-top mx-5" alt="..."></a>
+  <a href="/full/{{i.slug}}">
+    <img style="width:200px;height:150px;" src="/media/{{i.prod_img}}" class="card-img-top mx-5" alt="{{i.prod_name}}"></a>
     <div class="card-body">
-      <h5 class="card-title">{{i.prod_name}}</h5>
+      <a href="/full/{{i.slug}}" class="stretched-link"><h5 class="card-title">{{i.prod_name}}</h5></a>
       <p style="color:red;">Rs.{{i.prod_price}}/-</p>
       
       <a type="button" data-toggle="modal" data-target="#exampleModal">
@@ -126,7 +200,7 @@
         </div>
       </div>
       <div class='row justify-content-md-center'>
-        <form action="/addtocart/{{i.id}}/add/" method="POST">{% csrf_token %}
+      <form action="/addtocart/{{i.id}}/add/" method="POST">{% csrf_token %}
           {% if shop.delivery %}
           <select  id="quantity" name="quantity">
             <option selected="selected" value="1">1</option>
@@ -142,10 +216,40 @@
           </select>
           <button class="btn btn-primary" type="submit">Add</button>
           {% endif %}
+
+          
         </form>
+        
       </div>
     </div>
   </div>
+  {% else %}
+  <div class="card mx-2 text-center" style="width: 18rem;height:20rem;">
+  {{i.affiliate_img| safe}}
+    <div class="card-body">
+      <a href="/full/{{i.slug}}" class="stretched-link"><h5 class="card-title">{{i.prod_name}}</h5></a>
+      <p style="color:red;">Rs.{{i.prod_price}}/-</p>
+      
+      <a type="button" data-toggle="modal" data-target="#exampleModal">
+        Details
+      </a>
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-body">
+              <p class="card-text">{{i.prod_disc}}.</p> 
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class='row justify-content-md-center'>
+      <button type="button" href="{{prod.affiliate_link}}" class="btn btn-primary">Buy Now</button>
+        
+      </div>
+    </div>
+  </div>
+  {% endif %}
   {% endfor %}
 </div>
 <div class="container-fluid mt-4">
@@ -175,7 +279,7 @@
   {% endif %}
   <h3>Write Review</h3>
   <form action="/rate/{{shop.id}}" method="POST">{% csrf_token %}
-    <input type="range" name="rateinput" class="custom-range col-3 mr-2 mt-4" min="0" max="5" step="1" id="rateinput"
+    <input type="range" name="rateinput" class="custom-range col-3 mr-2 mt-4" min="1" max="5" step="1" id="rateinput"
       value='5' oninput="rateoutput.value = rateinput.value">
     <span class="badge badge-success"><i class="fas fa-star"></i>
       <output id="rateoutput" name="rateoutput" for="rangeInput"> 5</output></span>

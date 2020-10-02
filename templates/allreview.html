@@ -1,7 +1,10 @@
 
 {% extends 'base.html' %}
-{% block title %}Reviews
+{% block title %}Reviews of {{shop.shop_name}} | Locly.in
 {% endblock title %}
+{% block disc %}
+See the reviews of {{shop.shop_name}} at Locly.in {{shop.shop_disc}}
+{% endblock disc %}
 
 {% block body %}
 <div class="container-fluid mt-4">
