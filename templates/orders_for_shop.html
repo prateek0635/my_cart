@@ -5,7 +5,14 @@
 
 
 {% block body %}
-
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">Home</a></li>
+      <li class="breadcrumb-item"><a href="/shops">Shops</a></li>
+      <li class="breadcrumb-item"><a href="/shops/{{shop.shop_id}}">{{shop.shop_name}}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Order page</li>
+    </ol>
+  </nav>
 {% for item in order reversed %}
 
 

@@ -1,14 +1,19 @@
 
 {% extends 'base.html' %}
-{% block title %}Reviews of {{shop.shop_name}} | Locly.in
+{% block title %}
+{% if isprod %}Reviews of {{prod.prod_name}} | Locly.in{% else %}
+Reviews of {{shop.shop_name}} | Locly.in{% endif %}
 {% endblock title %}
 {% block disc %}
-See the reviews of {{shop.shop_name}} at Locly.in {{shop.shop_disc}}
+{% if isprod %}See the reviews of {{prod.prod_name}}{{prod.prod_name}} at Locly.in {{shop.shop_disc}}{% else %}
+See the reviews of {{shop.shop_name}} at Locly.in {{shop.shop_disc}}{% endif %}
 {% endblock disc %}
 
 {% block body %}
+
 <div class="container-fluid mt-4">
-    <h3>Reviews of {{shop.shop_name}}</h3>
+    {% if isprod %}<h3>Reviews of {{prod.prod_name}}</h3>{% else %}
+    <h3>Reviews of {{shop.shop_name}}</h3>{% endif %}
     {% if rate|length < 1 %}No Reviews yet{% endif %}
 
     {% for data in rate %}

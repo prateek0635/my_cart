@@ -21,6 +21,7 @@ class shop(models.Model):
     clicks=models.IntegerField(default=0)
     city=models.CharField(default='Bareilly',max_length=50)
     rating=models.FloatField(default=5)
+    live=models.BooleanField(default=False)
     Grocery = 'Grocery'
     Medical = 'Medical'
     DailyE='DailyE'
@@ -58,6 +59,9 @@ class products(models.Model):
     prod_name=models.CharField(max_length=500)
     prod_disc=models.CharField(max_length=500)
     prod_price=models.FloatField()
+    MRP=models.FloatField(blank=True)
+    discount=models.FloatField(blank=True)
+    rating=models.FloatField(default=5)
     about=RichTextUploadingField(blank=True)
     category_n = models.ForeignKey(category_prod,on_delete=models.CASCADE,blank=True, null=True)
     review=models.BooleanField(default=False)
@@ -131,6 +135,12 @@ pre_save.connect(sluf_gen,sender=myblog)
 class rateing(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     shop=models.ForeignKey(shop,on_delete=models.CASCADE)
+    rate=models.IntegerField(choices= [(i,i) for i in range(1,6)])
+    review=models.TextField(blank=True)
+
+class rateprod(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    prod=models.ForeignKey(products,on_delete=models.CASCADE)
     rate=models.IntegerField(choices= [(i,i) for i in range(1,6)])
     review=models.TextField(blank=True)
     

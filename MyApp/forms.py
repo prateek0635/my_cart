@@ -1,7 +1,7 @@
 from django import forms
-from .models import *
+from .models import products
 
-class prodimg(forms.ModelForm):
+class prodabout(forms.ModelForm):
     class Meta:
-        model=shop
-        fiels=['shop_img']
+        model=products
+        fields=['about']

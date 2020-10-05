@@ -21,15 +21,28 @@
 
 
 <h1 align="center">Welcome {{shop.shop_name}} Owner </h1>
-<form action='/shopview/addprod/{{shop.id}}' method='POST' enctype="multipart/form-data">{% csrf_token %}
+<form action='/shops/addprod/{{shop.id}}' method='POST' enctype="multipart/form-data">{% csrf_token %}
 <div class="container">
  <div class="form-group my-2">
   <label for="Product_name">Product Name</label>
   <input type="Text" class="form-control" name="Product_name" id="Product_name" placeholder='Product Name' >
   <label for="prod_disc">Product Dis</label>
   <input type="Text" class="form-control" id="prod_disc" name="prod_disc" placeholder='Product Discription' >
-  <label for="prod_price">Product Price</label>
+  <label for="prod_price">MRP</label>
+  <input type="number" class="form-control" name="mrp" id="mrp" placeholder='MRP' >
+  <label for="prod_price">Selling Price</label>
   <input type="number" class="form-control" name="prod_price" id="prod_price" placeholder='Product Price' >
+
+  <label for="prod_price">Category</label>
+  
+  <select class="custom-select" name="cate" required>
+    {% for cat in category %}
+    <option value="{{cat.id}}">{{cat.name}}</option>
+    {% endfor %}
+
+  </select>
+  {{ form.media }}
+    {{ form.as_p }}
   <label for="prod_img">Product Image</label>
   <input type="file" name="prod_img" value="prod_img" id="prod_img" required accept="image/*">
     <button type="submit" class="btn btn-primary">Submit</button>

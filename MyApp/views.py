@@ -3,9 +3,12 @@ from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login,logout
 from django.contrib import messages
-from .models import shop,products,cart,order,contact,myblog,rateing,category_prod
+from .models import shop,products,cart,order,contact,myblog,rateing,category_prod,rateprod
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg,Count
+from django.utils.text import slugify
+import string , random
+from MyApp.forms import prodabout
 # from .forms import *
 
 # Create your views here.
@@ -112,22 +115,36 @@ def add_prod(request,shopid):
         if request.method=='POST':
             prod_name=request.POST['Product_name']
             prod_disc=request.POST['prod_disc']
+            cate1=request.POST['cate']
+            category=category_prod.objects.filter(id=cate1)[0]
             prod_price=request.POST['prod_price']
+            MRP=request.POST['mrp']
             Img=request.FILES
             prod_img=Img.get("prod_img")
-            # print(prod_img)
-            # print(prod_name,prod_disc,prod_price,prod_disc,prod_img)
+            slug=slugify(prod_name)
+            discount=((int(MRP)-int(prod_price))/int(MRP))*100
+            ex=products.objects.filter(slug=slug)
+            if ex.exists():
+                rand=''.join(random.choices(string.ascii_uppercase + string.digits, k = 4))
+                slug=slug + '-' + str(rand)
+            
             add=products.objects.create(shop=shopn,prod_name=prod_name,prod_disc=prod_disc,
-                prod_price=prod_price,prod_img=prod_img)
+                prod_price=prod_price,MRP=MRP,slug=slug,category_n=category,prod_img=prod_img,discount=discount)
             add.save()
+            form=prodabout(request.POST,instance=add)
+            if form.is_valid():
+                post_item=form.save(commit=False)
+                post_item.save()
+            
             messages.success(request, 'Updated')
-            return redirect(f'/shopview/{shopn.id}')
+            return redirect(f'/shops/{shopn.shop_id}')
     else:
         messages.error(request, 'Login With Your Business Account')
         return redirect('/login')
     
-
-    param={'shop':shopn}
+    category=category_prod.objects.filter(shop=shopn)
+    form=prodabout()
+    param={'shop':shopn,"category":category,'form':form}
     return render(request,'add_prod.html',param)
 
 
@@ -135,8 +152,9 @@ def add_prod(request,shopid):
 def product_update(request,shopid):
     shopn=shop.objects.filter(id=shopid)[0]
     prod=products.objects.filter(shop=shopid)
+    category=category_prod.objects.filter(shop=shopn)
     if request.user==shopn.shop_user:
-        param={'prod':prod,'shop':shopn}
+        param={'prod':prod,'shop':shopn,"category":category}
         return render(request,'product_update.html',param)
     else:
         messages.error(request, 'Login With Your Business Account')
@@ -144,12 +162,20 @@ def product_update(request,shopid):
     
 def update_price(request,prodid):
     a=products.objects.filter(id=prodid)[0]
-    
+    shop=a.shop
+    print(shop)
     if request.user==a.shop.shop_user:
         if request.method=='POST':
             prod_name=request.POST['prod_name']
             prod_price=request.POST['prod_price']
+            MRP=request.POST['mrp']
             prod_disc=request.POST['prod_disc']
+            cate1=request.POST['cate']
+            discount=round(((float(MRP)-float(prod_price))/float(MRP))*100,1)
+            category=category_prod.objects.filter(shop=shop,name=cate1)[0]
+            a.MRP=MRP
+            a.discount=discount
+            a.category_n=category
             a.prod_name=prod_name
             a.prod_price=prod_price
             a.prod_disc=prod_disc
@@ -180,13 +206,13 @@ def add_to_cart(request,prodid,cmd):
             quantity=request.POST['quantity']
         add=cart.objects.create(user=request.user,products=a,quantity=quantity,shop=shopn)
         add.save()
-        return redirect(f'/shopview/{a.shop.id}')
+        return redirect(f'/shops/{a.shop.shop_id}')
     if cmd=='delete':
         dele=cart.objects.filter(user=request.user,id=prodid)
-        shop=dele[0].shop.id
+        shop=dele[0].shop.shop_id
         dele.delete()
         messages.error(request, 'Product has been removed form cart succesfully')
-        return redirect(f'/shopview/{shop}')
+        return redirect(f'/shops/{shop}')
 
 @login_required(login_url='/login')
 def order_cart(request,shopid):
@@ -235,7 +261,7 @@ def orders_for_shop(request,shopid):
     if request.user==shopn.shop_user:
         shopn=shop.objects.filter(id=shopid)[0]
         track=order.objects.filter(shop=shopn)
-        param={'order':track}
+        param={'order':track,'shop':shopn}
         return render(request,'orders_for_shop.html',param)
     
     else:
@@ -280,15 +306,16 @@ def contact_us(request):
         return redirect('/contact')
     return render(request,'contact_us.html')
 
-def blog_home(request,id):
-    if id==0:
-        post=myblog.objects.all()
-        param={'blog':post}
-        return render(request,'blog_home.html',param)
-    else:
-        post=myblog.objects.filter(id=id)[0]
-        param={'blog':post}
-        return render(request,'blog_full.html',param)
+def blog_home(request):
+    post=myblog.objects.all()
+    param={'blog':post}
+    return render(request,'blog_home.html',param)
+   
+
+def blog_full(request,slug):
+    post=myblog.objects.filter(slug=slug)[0]
+    param={'blog':post}
+    return render(request,'blog_full.html',param)
 @login_required(login_url='/login')
 def rate(request,id):
     shopn=shop.objects.filter(id=id)[0]
@@ -298,20 +325,54 @@ def rate(request,id):
         review=request.POST['review']
         a=rateing.objects.create(user=request.user,shop=shopn,rate=rating,review=review)
         a.save()
-    return redirect(f'/shopview/{id}')
+    return redirect(f'/shops/{shopn.shop_id}')
+
 def all_review(request,id):
     shopn=shop.objects.filter(id=id)[0]
     rate_obj=rateing.objects.filter(shop=id)
     param={'rate':rate_obj,'shop':shopn}
     return render(request,'allreview.html',param)
+    
 
+
+@login_required(login_url='/login')
+def rateprod1(request,id):
+    prod=products.objects.filter(id=id)[0]
+    if request.method=='POST':
+        rating=request.POST['rateinput']
+        review=request.POST['review']
+        a=rateprod.objects.create(user=request.user,prod=prod,rate=rating,review=review)
+        a.save()
+        messages.success(request, f'Thanks for your feedback')
+    return redirect(f'/full/{prod.slug}')
+def all_prod_rev(request,slug):
+    prod=products.objects.filter(slug=slug)[0]
+    rate_obj=rateprod.objects.filter(prod=prod)
+    isprod=True
+    param={'rate':rate_obj,'prod':prod,'isprod':isprod}
+    return render(request,'allreview.html',param)
 def fullprod(request,slug):
     prod=products.objects.filter(slug=slug)[0]
     shopid=prod.shop.id
+    rate=rateprod.objects.filter(prod=prod)
+    avg=rateprod.objects.filter(prod=prod).aggregate(Avg('rate'))
     shopn=shop.objects.filter(id=shopid)[0]
-    param={'prod':prod,'shop':shopn}
+    param={'prod':prod,'shop':shopn,'rate':rate}
+    if avg['rate__avg'] is None:
+        avg['rate__avg']=5
+    prod.rating=round(avg['rate__avg'],1)
+    prod.save()
+    param['rate__avg']=round(avg['rate__avg'],1)
+    if param['rate__avg']>=3.5:
+        param['rate_col']='success'
+    elif  param['rate__avg']>=2.5:
+        param['rate_col']='warning'
+    else:
+        param['rate_col']='danger'
+    
     return render(request,'product.html',param)
 
+@login_required(login_url='/login')
 def addcategory(request,com):
     if com=="add":
         if request.method=='POST':
@@ -324,3 +385,4 @@ def addcategory(request,com):
     else:
         pass
     return redirect(f"/shops/{shop_id}")
+    
